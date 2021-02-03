@@ -72,6 +72,9 @@ function main() {
         const log_lines = child_process.execSync(btmp_cmd).toString().split(/\r\n|\n/g);
         const cur_try_map = new Map<string, number>()
 
+        console.log(`read btmp logs:`);
+        console.log('\t' + log_lines.join(`\t${os.EOL}`))
+
         // get deny list
         for (const line of log_lines) {
             const m_res = btmp_matcher.exec(line);
@@ -96,7 +99,9 @@ function main() {
         const real_num = append_to_host_deny(deny_list);
 
         // clear btmp log
-        clear_btmp_log();
+        if (deny_list.length > 0) {
+            clear_btmp_log();
+        }
 
         console.log(`[done]: real deny number: ${real_num}${os.EOL}`);
 

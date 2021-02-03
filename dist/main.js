@@ -48,7 +48,7 @@ const btmp_path = '/var/log/btmp';
 const host_deny_path = '/etc/hosts.deny';
 const btmp_cmd = 'lastb';
 const try_max = 3;
-const task_interval = 1 * 1000 * 60;
+const task_interval = 2 * 1000 * 60;
 const btmp_matcher = /^\s*\w+\s+[^\s]+\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/i;
 const deny_host_matcher = /^\s*sshd:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):deny\s*$/i;
 function append_to_host_deny(deny_host) {
@@ -82,6 +82,8 @@ function main() {
         const cur_try_map = new Map();
         // get deny list
         for (const line of log_lines) {
+            if (line === '')
+                continue;
             const m_res = btmp_matcher.exec(line);
             if (m_res && m_res.length > 1) {
                 const ip = m_res[1];

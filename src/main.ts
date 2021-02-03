@@ -31,12 +31,16 @@ const host_deny_path = '/etc/hosts.deny';
 
 const btmp_cmd = 'lastb';
 const try_max = 3;
-const task_interval = 5 * 1000 * 60;
+const task_interval = 1 * 1000 * 60;
 
 const btmp_matcher = /^\s*\w+\s+[^\s]+\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/i;
 const deny_host_matcher = /^\s*sshd:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):deny\s*$/i;
 
 function append_to_host_deny(deny_host: string[]): number {
+
+    if (deny_host.length == 0) {
+        return deny_host.length;
+    }
 
     const lines = fs.readFileSync(host_deny_path).toString().split(/\r\n|\n/g);
     const exsited_deny_list: string[] = []
@@ -79,8 +83,6 @@ function main() {
                 const ip = m_res[1];
                 const old_count = cur_try_map.get(ip) || 0;
                 cur_try_map.set(ip, old_count + 1);
-            } else {
-                console.log(`ignore record: '${line}'`);
             }
         }
 
@@ -98,10 +100,9 @@ function main() {
         // append to host deny list
         const real_num = append_to_host_deny(deny_list);
 
-        // clear btmp log
-        if (deny_list.length > 0) {
-            clear_btmp_log();
-            console.log(child_process.execSync(`service sshd reload`).toString());
+        // append ok, clear log
+        if (real_num > 0) {
+            clear_btmp_log(); // clear btmp log
         }
 
         console.log(`[done]: found ${deny_list.length} ip, deny: ${real_num} ip` + os.EOL);

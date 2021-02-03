@@ -49,8 +49,8 @@ const host_deny_path = '/etc/hosts.deny';
 const btmp_cmd = 'lastb';
 const try_max = 3;
 const task_interval = 5 * 1000 * 60;
-const btmp_matcher = /^\s*\w+\s+[^\s]+\s+(\d{,3}\.\d{,3}\.\d{,3})/i;
-const deny_host_matcher = /^\s*sshd:(\d{,3}\.\d{,3}\.\d{,3}):deny\s*$/i;
+const btmp_matcher = /^\s*\w+\s+[^\s]+\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/i;
+const deny_host_matcher = /^\s*sshd:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):deny\s*$/i;
 function append_to_host_deny(deny_host) {
     const lines = fs.readFileSync(host_deny_path).toString().split(/\r\n|\n/g);
     const exsited_deny_list = [];

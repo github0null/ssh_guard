@@ -73,7 +73,7 @@ function main() {
         const cur_try_map = new Map<string, number>()
 
         console.log(`read btmp logs:`);
-        console.log('\t' + log_lines.join(`\t${os.EOL}`))
+        console.log('\t' + log_lines.join(`${os.EOL}\t`))
 
         // get deny list
         for (const line of log_lines) {
@@ -82,18 +82,21 @@ function main() {
                 const ip = m_res[1];
                 const old_count = cur_try_map.get(ip) || 0;
                 cur_try_map.set(ip, old_count + 1);
+            } else {
+                console.log(`ignore record: '${line}'`);
             }
         }
 
         // filter deny list
         const deny_list: string[] = [];
         for (const ip of cur_try_map.keys()) {
-            if (<number>cur_try_map.get(ip) > try_max) {
+            if (<number>cur_try_map.get(ip) >= try_max) {
                 deny_list.push(ip);
+                console.log(`confirm ip: ${ip}`);
+            } else {
+                console.log(`ignore ip: ${ip}, try count: ${cur_try_map.get(ip)}`);
             }
         }
-
-        console.log(`found ${deny_list.length} ip, deny them !`);
 
         // append to host deny list
         const real_num = append_to_host_deny(deny_list);
@@ -103,7 +106,7 @@ function main() {
             clear_btmp_log();
         }
 
-        console.log(`[done]: real deny number: ${real_num}${os.EOL}`);
+        console.log(`[done]: found ${deny_list.length} ip, deny: ${real_num}${os.EOL} ip`);
 
     } catch (error) {
         console.log(error);

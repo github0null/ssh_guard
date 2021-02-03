@@ -78,7 +78,7 @@ function main() {
         const log_lines = child_process.execSync(btmp_cmd).toString().split(/\r\n|\n/g);
         const cur_try_map = new Map();
         console.log(`read btmp logs:`);
-        console.log('\t' + log_lines.join(`\t${os.EOL}`));
+        console.log('\t' + log_lines.join(`${os.EOL}\t`));
         // get deny list
         for (const line of log_lines) {
             const m_res = btmp_matcher.exec(line);
@@ -87,22 +87,28 @@ function main() {
                 const old_count = cur_try_map.get(ip) || 0;
                 cur_try_map.set(ip, old_count + 1);
             }
+            else {
+                console.log(`ignore record: '${line}'`);
+            }
         }
         // filter deny list
         const deny_list = [];
         for (const ip of cur_try_map.keys()) {
-            if (cur_try_map.get(ip) > try_max) {
+            if (cur_try_map.get(ip) >= try_max) {
                 deny_list.push(ip);
+                console.log(`confirm ip: ${ip}`);
+            }
+            else {
+                console.log(`ignore ip: ${ip}, try count: ${cur_try_map.get(ip)}`);
             }
         }
-        console.log(`found ${deny_list.length} ip, deny them !`);
         // append to host deny list
         const real_num = append_to_host_deny(deny_list);
         // clear btmp log
         if (deny_list.length > 0) {
             clear_btmp_log();
         }
-        console.log(`[done]: real deny number: ${real_num}${os.EOL}`);
+        console.log(`[done]: found ${deny_list.length} ip, deny: ${real_num}${os.EOL} ip`);
     }
     catch (error) {
         console.log(error);

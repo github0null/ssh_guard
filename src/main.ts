@@ -55,7 +55,7 @@ function append_to_host_deny(deny_host: string[]): number {
         .map((ip) => { return `sshd:${ip}:deny`; });
 
     // append to deny_list
-    fs.appendFileSync(host_deny_path, append_list.join(os.EOL));
+    fs.appendFileSync(host_deny_path, append_list.join(os.EOL) + os.EOL);
 
     return append_list.length;
 }
@@ -71,7 +71,7 @@ function main() {
 
         const log_lines = child_process.execSync(btmp_cmd).toString().split(/\r\n|\n/g);
         const cur_try_map = new Map<string, number>()
-        
+
         // get deny list
         for (const line of log_lines) {
             const m_res = btmp_matcher.exec(line);
@@ -101,9 +101,10 @@ function main() {
         // clear btmp log
         if (deny_list.length > 0) {
             clear_btmp_log();
+            console.log(child_process.execSync(`service sshd reload`).toString());
         }
 
-        console.log(`[done]: found ${deny_list.length} ip, deny: ${real_num} ip`);
+        console.log(`[done]: found ${deny_list.length} ip, deny: ${real_num} ip` + os.EOL);
 
     } catch (error) {
         console.log(error);

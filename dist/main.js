@@ -66,7 +66,7 @@ function append_to_host_deny(deny_host) {
         .filter((ip) => { return !exsited_deny_list.includes(ip); })
         .map((ip) => { return `sshd:${ip}:deny`; });
     // append to deny_list
-    fs.appendFileSync(host_deny_path, append_list.join(os.EOL));
+    fs.appendFileSync(host_deny_path, append_list.join(os.EOL) + os.EOL);
     return append_list.length;
 }
 function clear_btmp_log() {
@@ -105,8 +105,9 @@ function main() {
         // clear btmp log
         if (deny_list.length > 0) {
             clear_btmp_log();
+            console.log(child_process.execSync(`service sshd reload`).toString());
         }
-        console.log(`[done]: found ${deny_list.length} ip, deny: ${real_num} ip`);
+        console.log(`[done]: found ${deny_list.length} ip, deny: ${real_num} ip` + os.EOL);
     }
     catch (error) {
         console.log(error);

@@ -59,7 +59,9 @@ function append_to_host_deny(deny_host: string[]): number {
         .map((ip) => { return `sshd:${ip}:deny`; });
 
     // append to deny_list
-    fs.appendFileSync(host_deny_path, append_list.join(os.EOL) + os.EOL);
+    if(append_list.length > 0) {
+        fs.appendFileSync(host_deny_path, append_list.join(os.EOL) + os.EOL);
+    }
 
     return append_list.length;
 }

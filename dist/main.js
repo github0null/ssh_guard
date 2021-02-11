@@ -69,7 +69,9 @@ function append_to_host_deny(deny_host) {
         .filter((ip) => { return !exsited_deny_list.includes(ip); })
         .map((ip) => { return `sshd:${ip}:deny`; });
     // append to deny_list
-    fs.appendFileSync(host_deny_path, append_list.join(os.EOL) + os.EOL);
+    if (append_list.length > 0) {
+        fs.appendFileSync(host_deny_path, append_list.join(os.EOL) + os.EOL);
+    }
     return append_list.length;
 }
 function clear_btmp_log() {

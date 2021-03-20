@@ -100,7 +100,7 @@ def main():
             deny_list.append(ip)
             print('confirm ip: {}'.format(ip))
         else:
-            print('ignore ip: {}, try count: {}', ip, cur_try_map[ip])
+            print('ignore ip: {}, try count: {}'.format(ip, cur_try_map[ip]))
 
     # append to host deny list
     real_num = append_to_host_deny(deny_list)

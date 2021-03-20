@@ -88,7 +88,9 @@ def main():
         m_res = btmp_matcher.search(line)
         if m_res and m_res.groups().__len__() > 0:
             ip = m_res.group(1)
-            old_count = cur_try_map[ip] or 0
+            old_count = 0
+            if ip in cur_try_map:
+                old_count = cur_try_map[ip]
             cur_try_map[ip] = old_count + 1
 
     # filter deny list

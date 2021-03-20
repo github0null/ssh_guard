@@ -34,7 +34,7 @@ btmp_matcher = re.compile(
 deny_host_matcher = re.compile(
     r'\s*sshd:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):deny\s*$', re.IGNORECASE)
 
-def append_to_host_deny(deny_host: list):
+def append_to_host_deny(deny_host):
 
     if deny_host.__len__() == 0:
         return deny_host.__len__()
@@ -43,7 +43,7 @@ def append_to_host_deny(deny_host: list):
     with open(host_deny_path, 'r') as fp:
         lines = fp.readlines()
 
-    exsited_deny_list: list = []
+    exsited_deny_list = []
 
     # get old deny list
     for line in lines:
@@ -92,7 +92,7 @@ def main():
             cur_try_map[ip] = old_count + 1
 
     # filter deny list
-    deny_list: list = []
+    deny_list = []
     for ip in cur_try_map:
         if cur_try_map[ip] >= try_max:
             deny_list.append(ip)

@@ -59,7 +59,7 @@ def append_to_host_deny(deny_host):
     for ip in deny_host:
         if ip in exsited_deny_list:
             continue
-        append_list.append('sshd:${}:deny'.format(ip))
+        append_list.append('sshd:{}:deny'.format(ip))
 
     # append to deny_list
     if append_list.__len__() > 0:

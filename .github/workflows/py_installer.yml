@@ -28,8 +28,8 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: checkout branch
-        uses: actions/checkout@master
+      #- name: checkout branch
+      #  uses: actions/checkout@master
 
       # Runs a single command using the runners shell
       - name: install pyinstaller

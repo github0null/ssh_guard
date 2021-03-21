@@ -52,5 +52,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           file: "${{ env.DIST_FOLDER }}/${{ env.EXE_NAME }}"
-          tags: false
+          tags: true
           draft: false

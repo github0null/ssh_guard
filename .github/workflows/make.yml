@@ -54,5 +54,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           file: "${{ env.EXE_NAME }}.zip"
-          tags: true
+          tags: false
           draft: false

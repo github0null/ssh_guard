@@ -43,14 +43,16 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Pack binary
-        run: pyinstaller -F --clean --distpath $DIST_FOLDER --workpath $BUILD_FOLDER --specpath $BUILD_FOLDER --name $EXE_NAME ./src/$ENTRY_NAME.py
-        
+        run: |
+          pyinstaller -F --clean --distpath $DIST_FOLDER --workpath $BUILD_FOLDER --specpath $BUILD_FOLDER --name $EXE_NAME ./src/$ENTRY_NAME.py
+          zip -r $EXE_NAME.zip $DIST_FOLDER/*
+
       # Publish Release
       - name: Publish Release
         uses: xresloader/upload-to-github-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: "${{ env.DIST_FOLDER }}/${{ env.EXE_NAME }}"
+          file: "${{ env.EXE_NAME }}.zip"
           tags: true
           draft: false

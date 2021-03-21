@@ -33,7 +33,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: install pyinstaller
-        run: python -m pip3 pyinstaller
+        run: pip3 pyinstaller
 
       # Runs a set of commands using the runners shell
       - name: pack binary for linux

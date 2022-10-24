@@ -26,21 +26,29 @@ import subprocess
 #
 # sshd:223.230.41.108:deny
 
+##################################################
+# config
+
 btmp_path = '/var/log/btmp'
 host_deny_path = '/etc/hosts.deny'
 
 btmp_cmd = 'lastb'
 try_max = 3
 
+deny_fmt_str = 'ALL:{ip}:deny\n'
+
+###################################################
+# program
+
 btmp_matcher = re.compile(
     r'\s*\w+\s+[^\s]+\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})', re.IGNORECASE)
 deny_host_matcher = re.compile(
     r'\s*sshd:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):deny\s*$', re.IGNORECASE)
 
-def append_to_host_deny(deny_host):
+def append_to_host_deny(deny_hosts):
 
-    if deny_host.__len__() == 0:
-        return deny_host.__len__()
+    if deny_hosts.__len__() == 0:
+        return deny_hosts.__len__()
 
     lines = None
     with open(host_deny_path, 'r') as fp:
@@ -56,10 +64,10 @@ def append_to_host_deny(deny_host):
 
     # filter existed ip
     append_list = []
-    for ip in deny_host:
+    for ip in deny_hosts:
         if ip in exsited_deny_list:
             continue
-        append_list.append('sshd:{}:deny\n'.format(ip))
+        append_list.append(deny_fmt_str.format(ip=ip))
 
     # append to deny_list
     if append_list.__len__() > 0:
